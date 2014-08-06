@@ -84,8 +84,8 @@ class Blockspring:
 	@classmethod
 	def register(cls, name, config):
 		def make_f(k):
-			def f(self, d):
-				return self.call(k, config, d)
+			def f(self, d=None, **kwargs):
+				return self.call(k, config, d or kwargs)
 			return f
 		setattr(cls, name, MethodType(make_f(name), None, cls))
 
@@ -94,7 +94,7 @@ for k, v in API.iteritems():
 	Blockspring.register(k, v)
 
 b = Block('sha512').block_id('72c4ba2569d21b7b115c8236ea8c636d').description('sha512 of a message').schema(['msg']).register()
-print b.block_id(), b.description(), b.schema()
+#print b.block_id(), b.description(), b.schema()
 
 cat = 'http://upload.wikimedia.org/wikipedia/commons/8/8d/President_Barack_Obama.jpg'
 bs = Blockspring(API_KEY)
@@ -104,4 +104,7 @@ bs = Blockspring(API_KEY)
 #print bs.jeannie({'message': 'What is the weather?'})
 #print bs.tree({'_levels': '10', '_trunk': '$', '_leaves': 'w'})
 #print bs.base64({'msg': 'Hello world!'})
-print bs.sha512({'msg': 'Hello world!'})
+#print bs.sha512({'msg': 'Hello world!'})
+
+#print bs.jeannie(message='Hello world!')
+#print bs.tree(_levels='10', _trunk='|', _leaves='v')
