@@ -1,0 +1,31 @@
+{
+	"image": {
+		"block": "d54a2e2c28aebab4fe079ff547cea495",
+		"description": "Tells you what your image (URL) is all about",
+		"schema": ["img"]
+	},
+
+	"fake_data": {
+		"block": "ba5ea3851f6617d1ce8addc0f99443e6",
+		"description": "Choose number of rows and get a spreadsheet of fake data.",
+		"schema": ["fake_row_count"]
+	},
+
+	"jeannie": {
+		"block": "37181aa2e94bb56df1444d9eb5d1d62f",
+		"description": "Blockspring API for the Jeannie voice assistant API",
+		"schema": ["message"]
+	},
+
+	"tree": {
+		"block": "1d888ebb91b0dd6abae2b17f3fa147d8",
+		"description": "This is a simple little script that generates ASCII trees",
+		"schema": ["_levels", "_trunk", "_leaves"]
+	},
+
+	"base64": {
+		"block": "16e9a66177adb91f1f75cf837d27558a",
+		"description": "base64 encode of a msg",
+		"schema": ["msg"]
+	}
+}
