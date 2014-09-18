@@ -4,52 +4,44 @@
 
 A cheerful interface for [Blockspring](https://api.blockspring.com/) APIs
 
+## 30-second Quick Start
+
+Fire up a Python interpreter.
+
+1. First, import some things and create a Blockspring instance.
+
+   ```python
+   >>> API_KEY = '<YOUR API KEY HERE>'
+   >>> from hap import *
+   >>> b = Blockspring(API_KEY)
+   ```
+
+2. Let's say we want to do a Google reverse image search. The first thing we need to do is find a block that will do this.
+
+   ```python
+   >>> f = Blockfinder().sort('top').tag('image-processing').fetch(API_KEY).query('reverse')
+   ```
+
+   What we've done is fetched all blocks with the `image-processing` tag, sorted by all-time top rating. Then we've searched these results for blocks that have "reverse" in the name.
+
+3. Now let's create and register our block!
+
+   ```python
+   >>> f.get_block(API_KEY, 0, 'imgsearch').register()
+   {'description': u"Enter a URL of an image, get Google's best guess to what that image is, and links to direct matches.", 'schema': [u'image_url'], 'id': u'5a1b66ef208007c51a45fda220dbe8db', 'name': u'Reverse Image Search'}
+   ```
+
+   At this point our `Blockfinder` instance still contains more than one block, so we grab the first one (at index `0`) and name it `imgsearch`. Don't forget to `register()` your block, that's important!
+
+4. It's time to call it!
+
+   ```python
+   >>> b.imgsearch(image_url='http://cdn.hitfix.com/photos/5621843/Grumpy-Cat.jpg')
+   '{"best_search": "grumpy cat", "direct_matches": "[\'http://www.grumpycats.com/\', \'http://en.wikipedia.org/wiki/Grumpy_Cat\', \'http://www.hitfix.com/comedy/the-internet-lies-peter-dinklage-sadly-did-not-take-a-selfie-with-grumpy-cat\', \'http://www.3news.co.nz/entertainment/grumpy-cat-has-hit-her-terrible-twos-2014040611\', \'http://www.3news.co.nz/entertainment/grumpy-cat-sells-out-2013091811\', \'http://www.butterflybeauty.tips/2014/07/tiny-cat-grumpy-cat-and-now-sad-cat.html\', \'http://coffeeticks.my/this-cat-has-gathered-over-5-million-likes-on-facebook/\']"}'
+   ```
+
+Yes, it was really that easy.
+
 ## Usage
 
-You can safely do `from hap import *`. This imports the two classes `Block` and `Blockspring`.
-
-### Register an API
-
-The first thing you're going to want to do is register an API to the Blockspring class. There are several ways to do so.
-
-1. Configure it as a `Block`
-
-   ```python
-   Block('sha512').block_id('72c4ba2569d21b7b115c8236ea8c636d').description('sha512 of a message').schema(['msg']).register()
-   ```
-
-2. Load it as a Python dictionary
-
-   ```python
-   Blockspring.load({
-       'sha512': {
-           'block_id': '72c4ba2569d21b7b115c8236ea8c636d',
-           'description': 'sha512 of a message',
-           'schema': ['msg']
-       }
-   })
-   ```
-
-   This method can accept several blocks at once.
-
-3. Load blocks from a JSON file
-
-   ```python
-   Blockspring.load_from_file('myblocks.json')
-   ```
-
-   In this case, the JSON is formatted exactly like the dictionary you would pass to `Blockspring.load()`.
-
-In all cases, the `schema` consists of a list of values the API expects (the keys for the data that you pass to Blockspring).
-
-### Call an API
-
-Now that you've registered your API, you can call it!
-
-```python
-API_KEY = ''  # Your API key here
-resp = Blockspring(API_KEY).sha512({'msg': 'Hello world!'})
-print resp  # Prints f6cde2a...
-```
-
-Wait, whaaaaat?! Was it really that easy? Rest assured, it was.
+You can safely do `from hap import *`. This imports the three classes `Block`, `Blockfinder`, and `Blockspring`.

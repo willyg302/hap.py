@@ -1,31 +1,20 @@
 {
-	"image": {
-		"block": "d54a2e2c28aebab4fe079ff547cea495",
-		"description": "Tells you what your image (URL) is all about",
-		"schema": ["img"]
+	"blockception": {
+		"id": "6ae703ca8c4e3b243c9ea45fa0e94342",
+		"name": "Blockception",
+		"schema": ["sort", "tag"],
+		"description": "An API for Blockspring using Blockspring.\r\n\r\n# Give\r\n\r\n- **Sort**: One of `trending`, `new`, or `top`\r\n- **Tag**: Any Blockspring tag, such as `image-processing`\r\n\r\nLeave blank to default to `trending` and no tags\r\n\r\n# Get\r\n\r\nA JSON dictionary, keyed by block ID, that contains the following dictionary for each block as its value:\r\n\r\n- **url**: The full URL to the block, can be used for further processing\r\n- **name**: The human-readable name of the block\r\n- **tags**: A list of tags this block is tagged with\r\n\r\nYou're welcome.\r\n\r\n(Shameless plug: this works pretty swell with my Python interface to Blockspring [here](https://github.com/willyg302/hap.py))"
 	},
-
-	"fake_data": {
-		"block": "ba5ea3851f6617d1ce8addc0f99443e6",
-		"description": "Choose number of rows and get a spreadsheet of fake data.",
-		"schema": ["fake_row_count"]
+	"get_block": {
+		"id": "916e3c15b1d0175167b69358175315e5",
+		"name": "Blockspring Block Info",
+		"schema": ["block_id"],
+		"description": "Given a block ID (e.g. `6ae703ca8c4e3b243c9ea45fa0e94342`), this returns a JSON dictionary containing info about that block. The dictionary has the following properties:\r\n\r\n- **id**: A simple ping of the ID you entered\r\n- **name**: Human-readable name of the block\r\n- **description**: The block's description in Markdown format\r\n- **schema**: A list of values, possibly empty, that you must specify when using the block (e.g. for the [Reverse Image Search](https://api.blockspring.com/users/pkpp1233/blocks/5a1b66ef208007c51a45fda220dbe8db) block, this will be `[\"image_url\"]`)"
 	},
-
-	"jeannie": {
-		"block": "37181aa2e94bb56df1444d9eb5d1d62f",
-		"description": "Blockspring API for the Jeannie voice assistant API",
-		"schema": ["message"]
-	},
-
-	"tree": {
-		"block": "1d888ebb91b0dd6abae2b17f3fa147d8",
-		"description": "This is a simple little script that generates ASCII trees",
-		"schema": ["_levels", "_trunk", "_leaves"]
-	},
-
-	"base64": {
-		"block": "16e9a66177adb91f1f75cf837d27558a",
-		"description": "base64 encode of a msg",
-		"schema": ["msg"]
+	"tags": {
+		"id": "40ecee22444642041bf4736330494f88",
+		"name": "Blockspring Tags",
+		"schema": [],
+		"description": "Returns a JSON array of current Blockspring tags. Each tag has the following properties:\r\n\r\n- **name**: The name of the tag, e.g. `image-processing`\r\n- **count**: Number of times the tag has been used\r\n- **description**: Equivalent to the tag's hover text"
 	}
 }

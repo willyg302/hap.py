@@ -1,53 +1,80 @@
+import os
 import json
 import urllib
 
 from types import MethodType
 
 
-__all__ = ['Block', 'Blockspring']
+__all__ = ['Block', 'Blockfinder', 'Blockspring']
 
 
 BLOCKSPRING_URL = 'https://sender.blockspring.com/api/blocks/{}?api_key={}'
+BASE_BLOCKS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'blocks.json')
 
 
-class Block:
+class Block(dict):
 
 	def __init__(self, name):
-		self.name = name
+		self._name = name
 
-	def _get_or_set(self, k, v):
-		if v is None:
-			return getattr(self, k)
-		setattr(self, k, v)
-		return self
+	def __getattr__(self, k):
+		if k in ['id', 'name', 'schema', 'description']:
+			def wrapped_f(v=None):
+				if v is None:
+					return self[k]
+				self[k] = v
+				return self
+			return wrapped_f
+		raise AttributeError('Method "{}" not recognized!'.format(k))
 
-	def block_id(self, _block_id=None):
-		return self._get_or_set('_block_id', _block_id)
-
-	def description(self, _description=None):
-		return self._get_or_set('_description', _description)
-
-	def schema(self, _schema=None):
-		return self._get_or_set('_schema', _schema)
+	def fetch(self, key):
+		data = json.loads(Blockspring(key).get_block(block_id=self.id()))
+		return self.name(data['name']).schema(data['schema']).description(data['description'])
 
 	def register(self):
-		Blockspring.register(self.name, {
-			'block': self._block_id,
-			'description': self._description,
-			'schema': self._schema 
-		})
+		Blockspring.register(self._name, self)
 		return self
+
+
+class Blockfinder(list):
+
+	def __init__(self):
+		self._sort = ''
+		self._tag = ''
+
+	def sort(self, _sort):
+		self._sort = _sort
+		return self
+
+	def tag(self, _tag):
+		self._tag = _tag
+		return self
+
+	def fetch(self, key, sort=None, tag=None):
+		self.extend(json.loads(Blockspring(key).blockception(sort=sort or self._sort, tag=tag or self._tag)))
+		return self
+
+	def query(self, s=''):
+		self[:] = [e for e in self if s in e['name'].lower()]
+		return self
+
+	def get_block(self, key, index, name):
+		if index < 0 or index >= len(self):
+			raise RuntimeException('Invalid block index!')
+		return Block(name).id(self[index]['id']).fetch(key)
 
 
 class Blockspring:
 
 	def __init__(self, key):
 		self.key = key
+		# Load the base blocks we need to work
+		Blockspring.load_from_file(BASE_BLOCKS)
 
 	def call(self, f, config, data):
 		if set(config['schema']) != set(data.keys()):
 			return
-		url = BLOCKSPRING_URL.format(config['block'], self.key)
+		url = BLOCKSPRING_URL.format(config['id'], self.key)
 		resp = urllib.urlopen(url, urllib.urlencode(data)).read().strip()
 		return resp
 
